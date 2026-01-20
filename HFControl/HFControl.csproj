@@ -10,7 +10,7 @@
         <Version>0.0.1</Version>
         <PackageReleaseNotes>
             # 0.0.1
-            - Initial release with simulation of heating furnance based on desired temperature
+            - Initial release with simulation of heating furnance based on desired temperature using fuzzy logic
         </PackageReleaseNotes>
     </PropertyGroup>
     
