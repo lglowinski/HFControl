@@ -1,0 +1,288 @@
+﻿<Window x:Class="HFControl.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HFControl"
+        mc:Ignorable="d"
+        Title="Heating Furnace Control - Fuzzy Logic Simulation" 
+        Height="600" Width="900"
+        Background="#1E1E2E"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip">
+    <Window.Resources>
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="#2D2D3D"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Margin" Value="8"/>
+        </Style>
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#B0B0C0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+        <Style x:Key="ValueStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#4CAF50"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="4" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Background" Value="#FF5722"/>
+        </Style>
+        
+        <!-- Title Bar Button Style -->
+        <Style x:Key="TitleBarButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#B0B0C0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="46"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#3D3D4D"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="CloseButton" TargetType="Button" BasedOn="{StaticResource TitleBarButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#E81123"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
+    <Border BorderBrush="#3D3D4D" BorderThickness="1" CornerRadius="8" Background="#1E1E2E">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Custom Title Bar -->
+            <Grid Grid.Row="0" Background="#252535" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- App Icon/Title -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="12,0,0,0" VerticalAlignment="Center">
+                    <TextBlock Text="HF" FontWeight="Bold" Foreground="#FF7043" FontSize="12" VerticalAlignment="Center"/>
+                    <TextBlock Text=" | Heating Furnace Control" Foreground="#B0B0C0" FontSize="12" VerticalAlignment="Center"/>
+                </StackPanel>
+                
+                <!-- Window Control Buttons -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button x:Name="MinimizeButton" Content="&#xE921;" Style="{StaticResource TitleBarButton}" Click="MinimizeButton_Click"/>
+                    <Button x:Name="MaximizeButton" Content="&#xE922;" Style="{StaticResource TitleBarButton}" Click="MaximizeButton_Click"/>
+                    <Button x:Name="CloseButton" Content="&#xE8BB;" Style="{StaticResource CloseButton}" Click="CloseButton_Click"/>
+                </StackPanel>
+            </Grid>
+            
+            <!-- Main Content -->
+            <Grid Grid.Row="1" Margin="8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="280"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+        
+                <!-- Header -->
+                <TextBlock Grid.Row="0" Grid.ColumnSpan="2" 
+                           Text="Heating Furnace Fuzzy Logic Controller" 
+                           Foreground="#FFFFFF" FontSize="20" FontWeight="Bold"
+                           Margin="16,8,8,8"/>
+        
+                <!-- Left Panel - Controls -->
+                <StackPanel Grid.Row="1" Grid.Column="0">
+                    <!-- Simulation Controls -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="SIMULATION CONTROL" Foreground="#7C7C8C" FontSize="11" FontWeight="Bold" Margin="0,0,0,12"/>
+                    
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                <Button x:Name="StartButton" Content="Start" Style="{StaticResource PrimaryButton}" 
+                                        Click="StartButton_Click" Margin="0,0,8,0"/>
+                                <Button x:Name="StopButton" Content="Stop" Style="{StaticResource SecondaryButton}" 
+                                        Click="StopButton_Click" IsEnabled="False"/>
+                            </StackPanel>
+                    
+                            <Button x:Name="ResetButton" Content="Reset Simulation" 
+                                    Style="{StaticResource PrimaryButton}" Background="#607D8B"
+                                    Click="ResetButton_Click" HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+                    </Border>
+            
+                    <!-- Target Temperature -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="TARGET TEMPERATURE" Style="{StaticResource LabelStyle}"/>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock x:Name="TargetTempText" Text="22.0" Style="{StaticResource ValueStyle}"/>
+                                <TextBlock Text=" C" Foreground="#7C7C8C" FontSize="16" VerticalAlignment="Bottom" Margin="0,0,0,4"/>
+                            </StackPanel>
+                            <Slider x:Name="TargetTempSlider" Minimum="10" Maximum="35" Value="22" 
+                                    TickFrequency="1" IsSnapToTickEnabled="True"
+                                    ValueChanged="TargetTempSlider_ValueChanged" Margin="0,8,0,0"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <TextBlock Text="10 C" Foreground="#7C7C8C" FontSize="10"/>
+                                <TextBlock Text="35 C" Foreground="#7C7C8C" FontSize="10" HorizontalAlignment="Right" Margin="160,0,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+            
+                    <!-- Environment Settings -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="ENVIRONMENT" Foreground="#7C7C8C" FontSize="11" FontWeight="Bold" Margin="0,0,0,12"/>
+                    
+                            <TextBlock Text="Outside Temperature" Style="{StaticResource LabelStyle}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="OutsideTempText" Text="5.0" Foreground="#64B5F6" FontSize="18" FontWeight="Bold"/>
+                                <TextBlock Text=" C" Foreground="#7C7C8C" FontSize="12" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
+                            </StackPanel>
+                            <Slider x:Name="OutsideTempSlider" Minimum="-20" Maximum="30" Value="5" 
+                                    ValueChanged="OutsideTempSlider_ValueChanged" Margin="0,8,0,12"/>
+                    
+                            <TextBlock Text="Heat Loss Rate" Style="{StaticResource LabelStyle}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="HeatLossText" Text="0.5" Foreground="#FFB74D" FontSize="18" FontWeight="Bold"/>
+                                <TextBlock Text=" C/min" Foreground="#7C7C8C" FontSize="12" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
+                            </StackPanel>
+                            <Slider x:Name="HeatLossSlider" Minimum="0.1" Maximum="2.0" Value="0.5" 
+                                    ValueChanged="HeatLossSlider_ValueChanged" Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+        
+                <!-- Right Panel - Monitoring -->
+                <Grid Grid.Row="1" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+            
+                    <!-- Status Cards -->
+                    <UniformGrid Grid.Row="0" Columns="3">
+                        <!-- Current Temperature -->
+                        <Border Style="{StaticResource CardStyle}">
+                            <StackPanel>
+                                <TextBlock Text="CURRENT TEMPERATURE" Style="{StaticResource LabelStyle}"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="CurrentTempText" Text="18.0" Foreground="#4FC3F7" FontSize="32" FontWeight="Bold"/>
+                                    <TextBlock Text=" C" Foreground="#7C7C8C" FontSize="16" VerticalAlignment="Bottom" Margin="4,0,0,6"/>
+                                </StackPanel>
+                                <TextBlock x:Name="TempStatusText" Text="Below target" Foreground="#FFB74D" FontSize="11"/>
+                            </StackPanel>
+                        </Border>
+                
+                        <!-- Furnace Output -->
+                        <Border Style="{StaticResource CardStyle}">
+                            <StackPanel>
+                                <TextBlock Text="FURNACE OUTPUT" Style="{StaticResource LabelStyle}"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="OutputText" Text="0" Foreground="#FF7043" FontSize="32" FontWeight="Bold"/>
+                                    <TextBlock Text="%" Foreground="#7C7C8C" FontSize="16" VerticalAlignment="Bottom" Margin="4,0,0,6"/>
+                                </StackPanel>
+                                <ProgressBar x:Name="OutputProgressBar" Value="0" Maximum="100" Height="8" 
+                                             Background="#3D3D4D" Foreground="#FF7043" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+                
+                        <!-- Simulation Time -->
+                        <Border Style="{StaticResource CardStyle}">
+                            <StackPanel>
+                                <TextBlock Text="SIMULATION TIME" Style="{StaticResource LabelStyle}"/>
+                                <TextBlock x:Name="SimTimeText" Text="00:00" Foreground="#81C784" FontSize="32" FontWeight="Bold"/>
+                                <TextBlock x:Name="SimStatusText" Text="Stopped" Foreground="#7C7C8C" FontSize="11"/>
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
+            
+                    <!-- Temperature Graph Area -->
+                    <Border Grid.Row="1" Style="{StaticResource CardStyle}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                    
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <TextBlock Text="TEMPERATURE HISTORY" Foreground="#7C7C8C" FontSize="11" FontWeight="Bold"/>
+                                <Border Background="#4FC3F7" CornerRadius="2" Padding="8,2" Margin="16,0,0,0">
+                                    <TextBlock Text="Current" Foreground="#1E1E2E" FontSize="10"/>
+                                </Border>
+                                <Border Background="#4CAF50" CornerRadius="2" Padding="8,2" Margin="8,0,0,0">
+                                    <TextBlock Text="Target" Foreground="#1E1E2E" FontSize="10"/>
+                                </Border>
+                                <Border Background="#FF7043" CornerRadius="2" Padding="8,2" Margin="8,0,0,0">
+                                    <TextBlock Text="Output" Foreground="#1E1E2E" FontSize="10"/>
+                                </Border>
+                            </StackPanel>
+                    
+                            <Canvas x:Name="GraphCanvas" Grid.Row="1" Background="#252535" ClipToBounds="True"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+        
+                <!-- Footer Status Bar -->
+                <Border Grid.Row="2" Grid.ColumnSpan="2" Background="#252535" CornerRadius="4" Padding="12,8" Margin="8">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse x:Name="StatusIndicator" Width="10" Height="10" Fill="#7C7C8C" Margin="0,0,8,0"/>
+                        <TextBlock x:Name="StatusText" Text="Ready - Press Start to begin simulation" Foreground="#B0B0C0" FontSize="12"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
