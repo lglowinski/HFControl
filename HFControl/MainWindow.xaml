@@ -172,7 +172,7 @@
                                 <TextBlock Text=" C" Foreground="#7C7C8C" FontSize="16" VerticalAlignment="Bottom" Margin="0,0,0,4"/>
                             </StackPanel>
                             <Slider x:Name="TargetTempSlider" Minimum="10" Maximum="35" Value="22" 
-                                    TickFrequency="1" IsSnapToTickEnabled="True"
+                                    TickFrequency="0.1" IsSnapToTickEnabled="True"
                                     ValueChanged="TargetTempSlider_ValueChanged" Margin="0,8,0,0"/>
                             <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                                 <TextBlock Text="10 C" Foreground="#7C7C8C" FontSize="10"/>

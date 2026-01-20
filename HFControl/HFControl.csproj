@@ -6,8 +6,14 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UseWPF>true</UseWPF>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <Version>0.0.1</Version>
+        <PackageReleaseNotes>
+            # 0.0.1
+            - Initial release with simulation of heating furnance based on desired temperature
+        </PackageReleaseNotes>
     </PropertyGroup>
-
+    
     <ItemGroup>
       <ProjectReference Include="..\HFControl.Services\HFControl.Services.csproj" />
     </ItemGroup>
