@@ -1,0 +1,56 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ "master" ]
+    paths:
+      - 'HFControl/HFControl.csproj'
+
+jobs:
+  release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Extract Version and Release Notes
+        id: project_data
+        shell: pwsh
+        run: |
+          [xml]$csproj = Get-Content "HFControl/HFControl.csproj"
+          $version = $csproj.Project.PropertyGroup.Version
+          $notes = $csproj.Project.PropertyGroup.PackageReleaseNotes.Trim()
+          
+          echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+          
+          # Handle multi-line release notes for GitHub Output
+          echo "NOTES<<EOF" >> $env:GITHUB_OUTPUT
+          echo "$notes" >> $env:GITHUB_OUTPUT
+          echo "EOF" >> $env:GITHUB_OUTPUT
+          
+          echo "Extracted Version: $version"
+
+      - name: Publish Application
+        run: dotnet publish HFControl/HFControl.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:PublishReadyToRun=true -o ./publish
+
+      - name: Zip Artifact
+        shell: pwsh
+        run: Compress-Archive -Path ./publish/* -DestinationPath ./HFControl_v${{ steps.project_data.outputs.VERSION }}_win-x64.zip
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.project_data.outputs.VERSION }}
+          name: Release ${{ steps.project_data.outputs.VERSION }}
+          body: ${{ steps.project_data.outputs.NOTES }}
+          draft: false
+          prerelease: false
+          files: |
+            HFControl_v${{ steps.project_data.outputs.VERSION }}_win-x64.zip

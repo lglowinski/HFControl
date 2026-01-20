@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Items", "Items", "{E3C056B9
 		.gitignore = .gitignore
 		README.md = README.md
 		LICENSE = LICENSE
+		.github\workflows\release.yml = .github\workflows\release.yml
 	EndProjectSection
 EndProject
 Global
@@ -25,5 +26,7 @@ Global
 		{ABCC5ECE-A29E-4F88-9443-B5485FAE2860}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABCC5ECE-A29E-4F88-9443-B5485FAE2860}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABCC5ECE-A29E-4F88-9443-B5485FAE2860}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 EndGlobal
